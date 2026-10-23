@@ -16,49 +16,64 @@
     Esta lección te prepara para defender la <strong>segunda pestaña</strong> de la aplicación frente al profesor. Cubre los Puntos 2 y 3 del enunciado: el cálculo formal de complejidad y la explicación rigurosa de los resultados.
   </p>
 
-  <h2>1. Desglose Formal: Versión Cátedra con Arreglo U — $O(V^2)$</h2>
+  <h2>1. Desglose Formal: Versión Cátedra con Arreglo U — O(V²)</h2>
   <ol>
-    <li><strong><code>crear_arreglo</code></strong>: Inicializa los $V$ registros del arreglo $\implies O(V)$.</li>
+    <li><strong><code>crear_arreglo</code></strong>: Inicializa los <em>V</em> registros del arreglo &rarr; <code>O(V)</code>.</li>
     <li>
-      <strong>Bucle <code>while</code></strong>: Realiza $V$ iteraciones (una por cada vértice a seleccionar). En cada iteración:
+      <strong>Bucle <code>while</code></strong>: Realiza <em>V</em> iteraciones (una por cada vértice a seleccionar). En cada iteración ejecuta:
       <ul>
-        <li><code>completo(U)</code>: Recorre los $V$ elementos $\implies O(V)$</li>
-        <li><code>buscar_minimo(U)</code>: Recorre los $V$ elementos buscando el menor costo $\implies O(V)$</li>
-        <li><code>actualizar(G, U, i)</code>: Recorre los $V$ posibles destinos evaluando la arista $\implies O(V)$</li>
+        <li><code>completo(U)</code>: Recorre los <em>V</em> elementos &rarr; <code>O(V)</code></li>
+        <li><code>buscar_minimo(U)</code>: Recorre los <em>V</em> elementos buscando el menor costo &rarr; <code>O(V)</code></li>
+        <li><code>actualizar(G, U, i)</code>: Recorre los <em>V</em> posibles destinos evaluando la arista &rarr; <code>O(V)</code></li>
       </ul>
     </li>
   </ol>
-  <div class="callout">
-    $$T_{\text{cátedra}}(V, E) = O(V) + \sum_{k=1}^V \Big[ \underbrace{O(V)}_{\text{completo}} + \underbrace{O(V)}_{\text{buscar\_min}} + \underbrace{O(V)}_{\text{actualizar}} \Big] = O(V) + V \cdot 3O(V) = \mathbf{O(V^2)}$$
-    <strong>Propiedad:</strong> Es $O(V^2)$ <em>siempre</em> (tanto en el mejor como en el peor caso), independientemente de la cantidad de aristas $E$, porque los tres métodos recorren el arreglo completo incondicionalmente.
+
+  <div class="formula-box">
+    <strong>Cálculo Total Cátedra:</strong><br />
+    T<sub>cátedra</sub>(V, E) = O(V)<sub>crear_arreglo</sub> + &sum;<sub>k=1..V</sub> [ O(V)<sub>completo</sub> + O(V)<sub>buscar_min</sub> + O(V)<sub>actualizar</sub> ]<br />
+    T<sub>cátedra</sub>(V, E) = O(V) + V &middot; [ 3 &middot; O(V) ] = <strong>O(V²)</strong>
   </div>
 
-  <h2>2. Desglose Formal: Variante Óptima — $O((V + E) \log V)$</h2>
+  <div class="callout">
+    <strong>Propiedad:</strong> Es <strong>O(V²) siempre</strong> (tanto en el mejor como en el peor caso), independientemente de la cantidad de aristas <em>E</em>, porque los tres métodos recorren el arreglo completo incondicionalmente.
+  </div>
+
+  <h2>2. Desglose Formal: Variante Óptima — O((V + E) log V)</h2>
   <ol>
-    <li><strong>Inicialización</strong>: Crear el arreglo $U$ toma $O(V)$; encolar el origen <code>(0, 0)</code> toma $O(1)$ $\implies O(V)$.</li>
+    <li><strong>Inicialización</strong>: Crear el arreglo <em>U</em> toma <code>O(V)</code>; encolar el origen <code>(0, 0)</code> toma <code>O(1)</code> &rarr; <code>O(V)</code>.</li>
     <li>
       <strong>Cota del Montículo con <em>Lazy Deletion</em></strong>:
       <ul>
-        <li>A lo sumo se acola una tupla por el origen y una por cada arista relajada $\implies \le 1 + E$ inserciones.</li>
-        <li>En cualquier grafo simple $E \le V(V-1) < V^2$, por lo que:
-          $$\log_2 E \le \log_2(V^2) = 2 \log_2 V = \mathbf{O(\log V)}$$
-        </li>
+        <li>A lo sumo se acola una tupla por el origen y una por cada arista relajada &rarr; &le; 1 + <em>E</em> inserciones.</li>
+        <li>En cualquier grafo simple <em>E</em> &le; <em>V</em>(<em>V</em> - 1) &lt; <em>V</em>², por lo que:</li>
       </ul>
+      <div class="formula-box" style="margin: 0.5rem 0;">
+        log<sub>2</sub>(E) &le; log<sub>2</sub>(V²) = 2 &middot; log<sub>2</sub>(V) = <strong>O(log V)</strong>
+      </div>
     </li>
-    <li><strong>Extracciones (<code>heappop</code>)</strong>: A lo sumo $1 + E$ desacolados en el ciclo principal $\implies \mathbf{O(E \log V)}$ (o $O(V \log V)$ para nodos definitivos).</li>
+    <li><strong>Extracciones (<code>heappop</code>)</strong>: A lo sumo 1 + <em>E</em> desacolados en el ciclo principal &rarr; <strong>O(E log V)</strong> (o <code>O(V log V)</code> para nodos definitivos).</li>
     <li>
       <strong>Relajaciones en <code>actualizar</code></strong>:
       <ul>
-        <li>Cada vértice se marca definitivo una sola vez. La suma de todas las aristas adyacentes inspeccionadas a lo largo de toda la ejecución del algoritmo es:
-          $$\sum_{i \in V} \text{grado\_salida}(i) = E$$
+        <li>Cada vértice se marca definitivo una sola vez. La suma de todas las aristas adyacentes inspeccionadas a lo largo de toda la ejecución del algoritmo es la suma de los grados de salida:
+          <div class="formula-box" style="margin: 0.5rem 0;">
+            &sum;<sub>i &isin; V</sub> grado_salida(i) = <strong>E</strong>
+          </div>
         </li>
-        <li>Para cada arista: leer y sobrescribir en el arreglo $U$ cuesta $O(1)$, y hacer <code>heappush</code> cuesta $O(\log V)$ $\implies \mathbf{O(E \log V)}$.</li>
+        <li>Para cada arista incidente: leer y sobrescribir en el arreglo <em>U</em> cuesta <code>O(1)</code>, y hacer <code>heappush</code> cuesta <code>O(log V)</code> &rarr; <strong>O(E log V)</strong>.</li>
       </ul>
     </li>
   </ol>
+
+  <div class="formula-box">
+    <strong>Cálculo Total Variante Óptima:</strong><br />
+    T<sub>óptima</sub>(V, E) = O(V)<sub>inicialización</sub> + O(V log V)<sub>extracciones definitivas</sub> + O(E log V)<sub>relajaciones en heap</sub><br />
+    T<sub>óptima</sub>(V, E) = <strong>O((V + E) log V)</strong>
+  </div>
+
   <div class="callout-success">
-    $$T_{\text{óptima}}(V, E) = O(V) + O(V \log V) + O(E \log V) = \mathbf{O((V + E) \log V)}$$
-    En grafos conexos donde $E \ge V - 1$, se resume directamente como $\mathbf{O(E \log V)}$.
+    En grafos conexos donde <em>E</em> &ge; <em>V</em> - 1, se resume directamente como <strong>O(E log V)</strong>.
   </div>
 
   <h2>3. Comparación según Densidad del Grafo</h2>
@@ -66,8 +81,8 @@
     <thead>
       <tr>
         <th>Tipo de Grafo</th>
-        <th>Relación de Aristas $E$</th>
-        <th>Cátedra (Arreglo $U$)</th>
+        <th>Relación de Aristas (E)</th>
+        <th>Cátedra (Arreglo U)</th>
         <th>Variante Óptima (Cola)</th>
         <th>¿Cuál es superior?</th>
       </tr>
@@ -75,30 +90,30 @@
     <tbody>
       <tr>
         <td><strong>Grafo Disperso (Sparse)</strong></td>
-        <td>$E = O(V)$</td>
-        <td>$O(V^2)$</td>
-        <td><strong>$O(V \log V)$</strong></td>
-        <td><strong>Gana ampliamente la Cola</strong> (ej. redes viales, internet).</td>
+        <td>E &asymp; V</td>
+        <td>O(V²)</td>
+        <td><strong>O(V log V)</strong></td>
+        <td><strong>Gana ampliamente la Cola</strong> (ej. redes viales, mapas).</td>
       </tr>
       <tr>
         <td><strong>Grafo Denso (Dense)</strong></td>
-        <td>$E \approx V^2$</td>
-        <td><strong>$O(V^2)$</strong></td>
-        <td>$O(V^2 \log V)$</td>
-        <td><strong>Gana el Arreglo</strong> asintóticamente (por ausencia del factor $\log V$).</td>
+        <td>E &asymp; V²</td>
+        <td><strong>O(V²)</strong></td>
+        <td>O(V² log V)</td>
+        <td><strong>Gana el Arreglo</strong> asintóticamente (por no pagar log V).</td>
       </tr>
       <tr>
         <td><strong>Cola + Matriz (0..V-1)</strong></td>
         <td>Cualquiera</td>
-        <td>$O(V^2)$</td>
-        <td>$O(V^2 + E \log V)$</td>
-        <td><strong>Peor que el original</strong> (mantiene el piso cuadrático de matriz).</td>
+        <td>O(V²)</td>
+        <td>O(V² + E log V)</td>
+        <td><strong>Peor que el original</strong> (mantiene el piso cuadrático).</td>
       </tr>
       <tr>
         <td><strong>Cola sin Arreglo (Literal)</strong></td>
         <td>Cualquiera</td>
-        <td>$O(V^2)$</td>
-        <td>$O(V^3)$</td>
+        <td>O(V²)</td>
+        <td>O(V³) / O(V² log V)</td>
         <td><strong>Pésimo</strong> (debe vaciar la cola en auxiliar en cada paso).</td>
       </tr>
     </tbody>
@@ -108,11 +123,13 @@
   <div class="callout-warning">
     <strong>¿Por qué en teoría gana el Arreglo para grafos densos, pero en el Sandbox dio 39 vs 74?</strong><br />
     <ol>
-      <li><strong>En el Sandbox (Pestaña 3)</strong>: El contador mide <em>llamadas a funciones del motor</em>. Cada <code>heappush</code> cuenta como 1 operación de alto nivel, mientras que el código de la cátedra cuenta cada elemento individual de sus bucles <code>for</code> explícitos. Por eso para $V=5$ da 39 vs 74.</li>
-      <li><strong>En la Teoría y en C puro</strong>: Cada inserción en el montículo realiza $\log_2(V)$ comparaciones de hundimiento/flotación en el árbol. El punto de cruce matemático exacto donde el Arreglo de la cátedra supera a la Cola de Prioridad ocurre cuando:
-        $$3V^2 &lt; V^2 \log_2(V) \implies \log_2(V) &gt; 3 \implies \mathbf{V \ge 9} \quad (E \ge 72)$$
+      <li><strong>En el Sandbox (Pestaña 3)</strong>: El contador mide <em>llamadas a funciones de alto nivel del motor</em>. Cada <code>heappush</code> cuenta como 1 operación, mientras que el código de la cátedra cuenta cada elemento individual de sus bucles <code>for</code> explícitos. Por eso para <em>V = 5</em> da 39 vs 74.</li>
+      <li><strong>En la Teoría y en C puro</strong>: Cada inserción en el montículo realiza log<sub>2</sub>(V) comparaciones de rebalanceo en el árbol. El punto de cruce matemático exacto donde el Arreglo de la cátedra supera a la Cola de Prioridad ocurre cuando:
+        <div class="formula-box" style="margin: 0.5rem 0;">
+          3V² &lt; V² &middot; log<sub>2</sub>(V) &implies; log<sub>2</sub>(V) &gt; 3 &implies; <strong>V &ge; 9</strong> &nbsp; (E &ge; 72 aristas)
+        </div>
       </li>
-      <li><strong>En Lenguaje C</strong>: En un grafo denso grande, el arreglo se beneficia de la <strong>localidad de caché L1/L2</strong> (memoria contigua) y realiza cada relajación con una única instrucción de máquina <code>MOV</code> en 1 ciclo de reloj, destruyendo la sobrecarga de saltos de memoria del heap.</li>
+      <li><strong>En Lenguaje C</strong>: En un grafo denso grande, el arreglo se beneficia de la <strong>localidad de caché L1/L2</strong> (memoria contigua) y realiza cada relajación con una única instrucción de máquina <code>MOV</code> en 1 ciclo de reloj, sin la sobrecarga de saltos de memoria del heap.</li>
     </ol>
   </div>
 

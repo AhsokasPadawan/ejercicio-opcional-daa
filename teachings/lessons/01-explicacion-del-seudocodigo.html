@@ -17,7 +17,7 @@
   </p>
 
   <div class="callout">
-    <strong>La idea central para la defensa:</strong> En el código original de la cátedra, el arreglo <code>Nodo[] U</code> cumplía dos funciones simultáneas: (1) <em>selección del mínimo</em> en $O(V)$ y (2) <em>tabla de acceso directo $O(1)$</em> para consultar costos y predecesores. La Cola de Prioridad reemplaza únicamente la primera función (bajándola a $O(\log V)$), pero <strong>se conserva el arreglo indexado</strong> para mantener el acceso $O(1)$.
+    <strong>La idea central para la defensa:</strong> En el código original de la cátedra, el arreglo <code>Nodo[] U</code> cumplía dos funciones simultáneas: (1) <em>selección del mínimo</em> en <code>O(V)</code> y (2) <em>tabla de acceso directo O(1)</em> para consultar costos y predecesores. La Cola de Prioridad reemplaza únicamente la primera función (bajándola a <code>O(log V)</code>), pero <strong>se conserva el arreglo indexado</strong> para mantener el acceso <code>O(1)</code>.
   </div>
 
   <h2>1. La Estructura <code>Nodo</code></h2>
@@ -27,7 +27,7 @@
     int prev       // Vértice inmediatamente anterior para reconstruir el camino.
 }</code></pre>
   <p>
-    Tanto en la cátedra como en nuestra variante óptima, cada vértice tiene asociado este registro en el arreglo <code>U</code> para garantizar lecturas y escrituras en tiempo constante <strong>$O(1)$</strong>.
+    Tanto en la cátedra como en nuestra variante óptima, cada vértice tiene asociado este registro en el arreglo <code>U</code> para garantizar lecturas y escrituras en tiempo constante <strong>O(1)</strong>.
   </p>
 
   <h2>2. El Algoritmo Principal: Comparación Línea por Línea</h2>
@@ -205,8 +205,8 @@
   <div class="callout-success">
     <strong>¡Ambas funciones desaparecen por completo en la versión óptima!</strong>
     <ul>
-      <li><code>completo(U)</code> recorría las $V$ posiciones en cada vuelta ($O(V)$). Se sustituye por <code>!Q.colaVacia()</code> en <strong>$O(1)$</strong>.</li>
-      <li><code>buscarMinimo(U)</code> recorría las $V$ posiciones buscando el menor ($O(V)$). Se sustituye por <code>Q.desacolar()</code> en <strong>$O(\log V)$</strong>.</li>
+      <li><code>completo(U)</code> recorría las <em>V</em> posiciones en cada vuelta (<code>O(V)</code>). Se sustituye por <code>!Q.colaVacia()</code> en <strong>O(1)</strong>.</li>
+      <li><code>buscarMinimo(U)</code> recorría las <em>V</em> posiciones buscando el menor (<code>O(V)</code>). Se sustituye por <code>Q.desacolar()</code> en <strong>O(log V)</strong>.</li>
     </ul>
   </div>
 
@@ -230,7 +230,7 @@
   }
 }</code></pre>
   <p>
-    Esto demuestra por qué una Cola de Prioridad <strong>no reemplaza a un arreglo indexado</strong>: no permite consultar <code>U[j].costo</code> por índice, obligando a desencolar y reencolar en cada paso, degradando el algoritmo a $O(V^3)$.
+    Esto demuestra por qué una Cola de Prioridad <strong>no reemplaza a un arreglo indexado</strong>: no permite consultar <code>U[j].costo</code> por índice, obligando a desencolar y reencolar en cada paso, degradando el algoritmo a <code>O(V<sup>3</sup>)</code>.
   </p>
 
   <div class="nav-lecciones">

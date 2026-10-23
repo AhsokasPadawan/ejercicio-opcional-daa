@@ -151,3 +151,30 @@ tr:hover {
   max-width: 100%;
   height: auto;
 }
+
+.formula-box {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-left: 5px solid #2563eb;
+  padding: 1rem 1.25rem;
+  margin: 1.2rem 0;
+  border-radius: 6px;
+  font-size: 1.05rem;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: #0f172a;
+}
+
+.formula-box sub {
+  font-size: 0.8rem;
+  color: #475569;
+}
+
+.formula-box sup {
+  font-size: 0.8rem;
+}
+
+.math {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+}
+

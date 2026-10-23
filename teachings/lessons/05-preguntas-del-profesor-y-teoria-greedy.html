@@ -37,12 +37,12 @@
       <tr>
         <td><strong>2. Selección</strong></td>
         <td>Criterio heurístico que elige el mejor candidato local.</td>
-        <td>Elegir el vértice no visitado de <strong>menor costo acumulado desde el origen 0</strong> (extraído del Min-Heap en $O(\log V)$).</td>
+        <td>Elegir el vértice no visitado de <strong>menor costo acumulado desde el origen 0</strong> (extraído del Min-Heap en <code>O(log V)</code>).</td>
       </tr>
       <tr>
         <td><strong>3. Factibilidad</strong></td>
         <td>Determina si una transición puede formar parte de la solución.</td>
-        <td>Que el vértice destino no esté visitado (<code>!U[j].selec</code>) y exista arista dirigida con peso positivo ($w > 0$).</td>
+        <td>Que el vértice destino no esté visitado (<code>!U[j].selec</code>) y exista arista dirigida con peso positivo (<em>w &gt; 0</em>).</td>
       </tr>
       <tr>
         <td><strong>4. Solución</strong></td>
@@ -62,16 +62,17 @@
     <strong>¿Por qué Dijkstra garantiza el óptimo global?</strong><br />
     Cumple dos propiedades fundamentales:
     <ol>
-      <li><strong>Subestructura Óptima:</strong> Si el camino mínimo $0 \rightsquigarrow w$ pasa por $v$, el subcamino $0 \rightsquigarrow v$ es necesariamente el camino mínimo entre $0$ y $v$.</li>
+      <li><strong>Subestructura Óptima:</strong> Si el camino mínimo entre 0 y <em>w</em> pasa por un vértice intermedio <em>v</em> (camino 0 &rarr; <em>v</em> &rarr; <em>w</em>), el subcamino 0 &rarr; <em>v</em> es necesariamente el camino mínimo entre 0 y <em>v</em>.</li>
       <li>
-        <strong>Demostración por el absurdo:</strong> Sea $u$ el nodo recién extraído con costo tentativo $d[u]$. Si existiera otro camino más corto $P^*$ hacia $u$ ($w(P^*) &lt; d[u]$), como $P^*$ arranca en los nodos ya visitados $S$ y llega a $u \notin S$, debe cruzar la frontera por una primera arista $(x, y)$ con $y \notin S$.
-        Como todos los pesos son no negativos ($w \ge 0$), el costo hasta $u$ satisface $w(P^*) \ge d[y]$. Pero como $u$ fue elegido por la función de selección voraz por ser el mínimo entre todos los pendientes, $d[u] \le d[y] \le w(P^*) &lt; d[u]$, lo que es una contradicción. Por lo tanto, $d[u]$ es estrictamente definitivo al marcar <code>selec = True</code>.
+        <strong>Demostración por el absurdo:</strong> Sea <em>u</em> el nodo recién extraído con costo tentativo <em>d</em>[<em>u</em>]. Si existiera otro camino más corto <em>P</em>* hacia <em>u</em> (con peso menor a <em>d</em>[<em>u</em>]), como <em>P</em>* arranca en los nodos ya visitados <em>S</em> y llega a <em>u</em> (que no estaba en <em>S</em>), debe cruzar la frontera por una primera arista (<em>x</em>, <em>y</em>) donde <em>x</em> &isin; <em>S</em> e <em>y</em> &notin; <em>S</em>.<br />
+        Como todos los pesos son no negativos (<em>w</em> &ge; 0), el costo hasta <em>u</em> satisface peso(<em>P</em>*) &ge; <em>d</em>[<em>y</em>]. Pero como <em>u</em> fue elegido por la función de selección voraz por ser el mínimo entre todos los pendientes, se cumple que <em>d</em>[<em>u</em>] &le; <em>d</em>[<em>y</em>] &le; peso(<em>P</em>*) &lt; <em>d</em>[<em>u</em>], lo que es una contradicción (<em>d</em>[<em>u</em>] &lt; <em>d</em>[<em>u</em>]). Por lo tanto, <em>d</em>[<em>u</em>] es estrictamente definitivo al marcar <code>selec = True</code>.
       </li>
     </ol>
   </div>
+
   <div class="callout-warning">
     <strong>¿Por qué no admite aristas de peso negativo?</strong><br />
-    Porque si existe una arista con peso negativo ($w &lt; 0$), extender un camino puede <em>restar</em> costo acumulado. Un camino que pase por un nodo $y$ más lejano podría terminar siendo más barato que $d[u]$. Como Dijkstra ya marcó $u$ como definitivo y nunca vuelve atrás (no hace backtracking), se perdería ese camino más corto.
+    Porque si existe una arista con peso negativo (<em>w &lt; 0</em>), extender un camino puede <em>restar</em> costo acumulado. Un camino que pase por un nodo <em>y</em> más lejano podría terminar siendo más barato que <em>d</em>[<em>u</em>]. Como Dijkstra ya marcó <em>u</em> como definitivo y nunca vuelve atrás (no hace backtracking), se perdería ese camino más corto.
   </div>
 
   <h2>3. Banco de Preguntas Típicas para la Defensa Oral</h2>
@@ -79,28 +80,30 @@
   <h3>Pregunta 1: "¿Por qué conservaron el arreglo U en vez de borrarlo por completo?"</h3>
   <div class="callout-success">
     <strong>Respuesta Modelo:</strong><br />
-    <em>"Porque el arreglo U cumplía dos funciones: por un lado era el conjunto de candidatos donde buscarMinimo hacía la búsqueda lineal en $O(V)$, y por otro lado era la tabla de acceso directo $O(1)$ para consultar y modificar costos. La Cola de Prioridad optimiza la búsqueda a $O(\log V)$, pero no provee indexación por clave. Si quitáramos U (como mostramos en la variante no óptima), para relajar una arista tendríamos que vaciar la cola en una auxiliar, degradando la complejidad a $O(V^3)$. Por eso la cola reemplaza la selección, pero conservamos U como tabla de estado."</em>
+    <em>"Porque el arreglo U cumplía dos funciones: por un lado era el conjunto de candidatos donde buscarMinimo hacía la búsqueda lineal en <code>O(V)</code>, y por otro lado era la tabla de acceso directo <code>O(1)</code> para consultar y modificar costos. La Cola de Prioridad optimiza la búsqueda a <code>O(log V)</code>, pero no provee indexación por clave. Si quitáramos U (como mostramos en la variante no óptima), para relajar una arista tendríamos que vaciar la cola en una auxiliar, degradando la complejidad a <code>O(V<sup>3</sup>)</code>. Por eso la cola reemplaza la selección, pero conservamos U como tabla de estado."</em>
   </div>
 
-  <h3>Pregunta 2: "¿Qué pasa con las entradas duplicadas en la cola de prioridad (*Lazy Deletion*)? ¿No rompe el $O(\log V)$?"</h3>
+  <h3>Pregunta 2: "¿Qué pasa con las entradas duplicadas en la cola de prioridad (*Lazy Deletion*)? ¿No rompe el O(log V)?"</h3>
   <div class="callout-success">
     <strong>Respuesta Modelo:</strong><br />
-    <em>"No rompe la complejidad. Usamos Lazy Deletion: cuando encontramos un atajo, insertamos la nueva tupla con menor costo en $O(\log V)$. Como tiene menor costo, el Min-Heap la entregará primero y marcará el nodo como <code>selec = True</code>. Cuando más tarde sale la entrada vieja con mayor costo, la condición <code>if arreglo_u[i].selec: continue</code> la descarta en $O(1)$. Además, como a lo sumo se inserta una tupla por cada arista relajada, el heap tiene a lo sumo $E$ elementos. Por propiedad logarítmica: $\log_2(E) \le \log_2(V^2) = 2 \log_2 V = O(\log V)$. La constante 2 se absorbe y el costo sigue siendo estrictamente $O(\log V)$."</em>
+    <em>"No rompe la complejidad. Usamos Lazy Deletion: cuando encontramos un atajo, insertamos la nueva tupla con menor costo en <code>O(log V)</code>. Como tiene menor costo, el Min-Heap la entregará primero y marcará el nodo como <code>selec = True</code>. Cuando más tarde sale la entrada vieja con mayor costo, la condición <code>if arreglo_u[i].selec: continue</code> la descarta en <code>O(1)</code>. Además, como a lo sumo se inserta una tupla por cada arista relajada, el heap tiene a lo sumo <em>E</em> elementos. Por propiedad logarítmica: log<sub>2</sub>(E) &le; log<sub>2</sub>(V²) = 2 &middot; log<sub>2</sub>(V) = <code>O(log V)</code>. La constante 2 se absorbe y el costo sigue siendo estrictamente <code>O(log V)</code>."</em>
   </div>
 
   <h3>Pregunta 3: "¿Mejora siempre la complejidad al usar cola de prioridad?"</h3>
   <div class="callout-success">
     <strong>Respuesta Modelo:</strong><br />
     <em>"Depende de la densidad del grafo y de la representación:
-    1. En <strong>grafos dispersos</strong> ($E \approx V$), $O(V \log V)$ mejora drásticamente al $O(V^2)$ del arreglo.
-    2. En <strong>grafos densos</strong> ($E \approx V^2$), $O(V^2 \log V)$ tiene un factor logarítmico extra, por lo que el Arreglo de la cátedra $O(V^2)$ es asintóticamente superior.
-    3. Si mantuviéramos una <strong>matriz de adyacencia</strong> recorriendo los $V$ vértices en actualizar, la complejidad quedaría en $O(V^2 + E \log V)$, sin mejorar nunca al original."</em>
+    <ol style='margin-top: 0.5rem;'>
+      <li>En <strong>grafos dispersos</strong> (<em>E &asymp; V</em>), <code>O(V log V)</code> mejora drásticamente al <code>O(V²)</code> del arreglo.</li>
+      <li>En <strong>grafos densos</strong> (<em>E &asymp; V²</em>), <code>O(V² log V)</code> tiene un factor logarítmico extra, por lo que el Arreglo de la cátedra <code>O(V²)</code> es asintóticamente superior.</li>
+      <li>Si mantuviéramos una <strong>matriz de adyacencia</strong> recorriendo los <em>V</em> vértices en actualizar, la complejidad quedaría en <code>O(V² + E log V)</code>, sin mejorar nunca al original.</li>
+    </ol>"</em>
   </div>
 
   <h3>Pregunta 4: "¿Por qué en teoría gana el Arreglo para densos, pero en el Sandbox dio 39 vs 74?"</h3>
   <div class="callout-success">
     <strong>Respuesta Modelo:</strong><br />
-    <em>"Porque el Sandbox mide llamadas a funciones de alto nivel del motor: cada <code>heappush</code> nativo cuenta como 1 operación, mientras que el código de la cátedra tiene el sobrecosto de recorrer dos veces el arreglo completo (completo y buscarMinimo). En la teoría y en lenguaje C, cada inserción en el heap cuesta $\log_2 V$ comparaciones y saltos de memoria; para grafos densos con $V \ge 9$ ($E \ge 72$), el costo acumulado $V^2 \log_2 V$ supera a las $3V^2$ comparaciones secuenciales en memoria caché del arreglo."</em>
+    <em>"Porque el Sandbox mide llamadas a funciones de alto nivel del motor: cada <code>heappush</code> nativo cuenta como 1 operación, mientras que el código de la cátedra tiene el sobrecosto de recorrer dos veces el arreglo completo (completo y buscarMinimo). En la teoría y en lenguaje C, cada inserción en el heap cuesta log<sub>2</sub>(V) comparaciones y saltos de memoria; para grafos densos con <em>V &ge; 9</em> (<em>E &ge; 72</em>), el costo acumulado <em>V</em>² &middot; log<sub>2</sub>(V) supera a las 3<em>V</em>² comparaciones secuenciales en memoria caché del arreglo."</em>
   </div>
 
   <div class="nav-lecciones">

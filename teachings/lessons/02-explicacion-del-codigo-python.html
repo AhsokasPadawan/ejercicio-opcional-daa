@@ -178,7 +178,7 @@ class Nodo:
 
   <div class="callout-warning">
     <strong>¿Cómo opera el <em>Lazy Deletion</em> en Python?</strong><br />
-    En un Min-Heap sin punteros invertidos, modificar una clave arbitraria (<em>decrease_key</em>) requeriría recorrer la lista en $O(V)$. En su lugar, simplemente insertamos la nueva tupla con menor costo en $O(\log V)$. La tupla de menor costo saldrá primero de la cola y consolidará el nodo marcando <code>arreglo_u[j].selec = True</code>. Cuando más adelante la tupla vieja obsoleta llegue a la cima, la línea <code>if arreglo_u[i].selec: continue</code> la detecta y la descarta en <strong>$O(1)$</strong> sin volver a relajar sus aristas.
+    En un Min-Heap sin punteros invertidos, modificar una clave arbitraria (<em>decrease_key</em>) requeriría recorrer la lista en <code>O(V)</code>. En su lugar, simplemente insertamos la nueva tupla con menor costo en <code>O(log V)</code>. La tupla de menor costo saldrá primero de la cola y consolidará el nodo marcando <code>arreglo_u[j].selec = True</code>. Cuando más adelante la tupla vieja obsoleta llegue a la cima, la línea <code>if arreglo_u[i].selec: continue</code> la detecta y la descarta en <strong>O(1)</strong> sin volver a relajar sus aristas.
   </div>
 
   <div class="nav-lecciones">

@@ -25,7 +25,7 @@
   <ul>
     <li><strong>Lienzo Izquierdo (Grafo de Entrada)</strong>: Muestra los vértices y aristas del grafo original. Se resalta el vértice extraído en verde y la arista evaluada en azul.</li>
     <li><strong>Visualizador de la Cola de Prioridad</strong>: Muestra el contenido del Min-Heap en cada paso con sus tuplas <code>(costo, vértice)</code>.</li>
-    <li><strong>Tabla de Estado del Arreglo $U$</strong>: Muestra las columnas <code>vértice</code>, <code>selec</code>, <code>costo</code> y <code>prev</code> actualizándose en tiempo real.</li>
+    <li><strong>Tabla de Estado del Arreglo U</strong>: Muestra las columnas <code>vértice</code>, <code>selec</code>, <code>costo</code> y <code>prev</code> actualizándose en tiempo real.</li>
     <li><strong>Lienzo Derecho (Grafo Resultado / Árbol SPT)</strong>: Construye el <em>Shortest Path Tree</em> conectando solo las aristas definitivas que forman los caminos mínimos desde el vértice <code>0</code>.</li>
   </ul>
 
@@ -93,8 +93,8 @@
       <tr>
         <th>Vuelta</th>
         <th>Nodo Extraído (mínimo)</th>
-        <th>Acción en la Tabla $U$</th>
-        <th>Aristas Relajadas y Encoladas en $Q$</th>
+        <th>Acción en la Tabla U</th>
+        <th>Aristas Relajadas y Encoladas en Q</th>
         <th>Grafo Resultado (SPT)</th>
       </tr>
     </thead>
@@ -102,7 +102,7 @@
       <tr>
         <td><strong>Paso 0</strong></td>
         <td>— (Inicio)</td>
-        <td><code>U[0].costo = 0</code>, resto en $\infty$. Todos en <code>selec = False</code>.</td>
+        <td><code>U[0].costo = 0</code>, resto en &infin;. Todos en <code>selec = False</code>.</td>
         <td>Se encola <code>[(0, nodo 0)]</code></td>
         <td>Vacío.</td>
       </tr>
@@ -117,21 +117,21 @@
         <td><strong>Vuelta 2</strong></td>
         <td><strong>Nodo 3</strong> (costo 5)</td>
         <td><code>U[3].selec = True</code></td>
-        <td>Relaja vecinos. Encuentra atajo a 1 ($5+3=8 &lt; 10$). Sobrescribe <code>U[1].costo = 8</code>, <code>U[1].prev = 3</code>. Encola <code>(8, 1)</code>, <code>(7, 4)</code>, <code>(14, 2)</code>.</td>
+        <td>Relaja vecinos. Encuentra atajo a 1 (5 + 3 = 8 &lt; 10). Sobrescribe <code>U[1].costo = 8</code>, <code>U[1].prev = 3</code>. Encola <code>(8, 1)</code>, <code>(7, 4)</code>, <code>(14, 2)</code>.</td>
         <td>Se agrega arista <code>(0 -&gt; 3)</code>.</td>
       </tr>
       <tr>
         <td><strong>Vuelta 3</strong></td>
         <td><strong>Nodo 4</strong> (costo 7)</td>
         <td><code>U[4].selec = True</code></td>
-        <td>Relaja hacia 2 ($7+6=13 &lt; 14$). Sobrescribe <code>U[2]=13</code>. Encola <code>(13, 2)</code>.</td>
+        <td>Relaja hacia 2 (7 + 6 = 13 &lt; 14). Sobrescribe <code>U[2]=13</code>. Encola <code>(13, 2)</code>.</td>
         <td>Se agrega arista <code>(3 -&gt; 4)</code>.</td>
       </tr>
       <tr>
         <td><strong>Vuelta 4</strong></td>
         <td><strong>Nodo 1</strong> (costo 8)</td>
         <td><code>U[1].selec = True</code></td>
-        <td>Relaja hacia 2 ($8+1=9 &lt; 13$). Sobrescribe <code>U[2]=9</code>, <code>U[2].prev = 1</code>. Encola <code>(9, 2)</code>.</td>
+        <td>Relaja hacia 2 (8 + 1 = 9 &lt; 13). Sobrescribe <code>U[2]=9</code>, <code>U[2].prev = 1</code>. Encola <code>(9, 2)</code>.</td>
         <td>Se agrega arista <code>(3 -&gt; 1)</code> (atajo).</td>
       </tr>
       <tr>
@@ -145,7 +145,7 @@
         <td><strong>Descartes</strong></td>
         <td>Tuplas viejas (10, 1), (14, 2), etc.</td>
         <td>Ninguna. Al salir se detecta <code>U[i].selec == True</code>.</td>
-        <td><em>Descarte por Lazy Deletion</em> en $O(1)$ sin relajar.</td>
+        <td><em>Descarte por Lazy Deletion</em> en <code>O(1)</code> sin relajar.</td>
         <td>Sin cambios.</td>
       </tr>
       <tr>
