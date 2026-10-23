@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lección 2: Explicación del Código Python (Pestaña 1)</title>
+  <link rel="stylesheet" href="../assets/styles.css" />
+</head>
+<body>
+  <div style="margin-bottom: 1rem;">
+    <span class="badge">Parte 2 de 5 — Pestaña 1 de la UI</span>
+  </div>
+  <h1>Lección 2: Explicación Línea por Línea del Código en Python</h1>
+
+  <p>
+    En la <strong>Pestaña 1</strong> de la aplicación, al conmutar el selector superior a <strong>"Código Python"</strong>, se exhibe la implementación real en Python ejecutable (<a href="../../dijkstra_tp.py">dijkstra_tp.py</a>). Esta lección cubre cada detalle de la traducción y los aspectos técnicos que el profesor puede evaluar.
+  </p>
+
+  <h2>1. La Estructura <code>Nodo</code> en Python</h2>
+  <pre><code>from dataclasses import dataclass
+import heapq
+import math
+
+@dataclass
+class Nodo:
+    selec: bool = False
+    costo: float = math.inf
+    prev: int = 0</code></pre>
+  <ul>
+    <li><code>heapq</code>: Módulo nativo de la biblioteca estándar de Python que implementa las operaciones de un <strong>Min-Heap binario</strong> sobre una lista estándar.</li>
+    <li><code>math.inf</code>: Constante de punto flotante que representa el infinito ($\infty$) para nodos aún no alcanzados.</li>
+  </ul>
+
+  <h2>2. El Bucle Principal: <code>dijkstra()</code></h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 5%;">#</th>
+        <th style="width: 47%;">Versión Cátedra en Python</th>
+        <th style="width: 48%;">Variante Óptima en Python</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><code>def dijkstra(grafo: GrafoTDA) -&gt; list[Nodo]:</code></td>
+        <td><code>def dijkstra(grafo: Grafo) -&gt; list[Nodo]:</code></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><code>    arreglo_u = crear_arreglo(grafo)</code></td>
+        <td><code>    arreglo_u = crear_arreglo(grafo)</code></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><em>(no existe cola)</em></td>
+        <td><code>    cola_q: list[tuple[float, int]] = []</code></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><em>(no existe cola)</em></td>
+        <td><code>    heapq.heappush(cola_q, (0, 0))</code></td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><code>    while not completo(arreglo_u):</code></td>
+        <td><code>    while len(cola_q) &gt; 0:</code></td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><code>        i = buscar_minimo(arreglo_u)</code></td>
+        <td><code>        costo_i, i = heapq.heappop(cola_q)</code></td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><code>        if i is None: break</code></td>
+        <td><em>(no requerido)</em></td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td><em>(no existe)</em></td>
+        <td><code>        if arreglo_u[i].selec: continue</code></td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td><code>        arreglo_u[i].selec = True</code></td>
+        <td><code>        arreglo_u[i].selec = True</code></td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td><code>        actualizar(grafo, arreglo_u, i)</code></td>
+        <td><code>        actualizar(grafo, arreglo_u, cola_q, i)</code></td>
+      </tr>
+      <tr>
+        <td>11</td>
+        <td><code>    return arreglo_u</code></td>
+        <td><code>    return arreglo_u</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Pregunta Clave del Profesor: "¿Por qué en la tupla <code>(0, 0)</code> el costo va primero y el vértice segundo?"</strong><br />
+    <em>Respuesta:</em> Porque Python compara tuplas de manera <strong>lexicográfica</strong> (compara primero el índice <code>0</code>, y solo en caso de empate compara el índice <code>1</code>). Para que el Min-Heap ordene automáticamente por menor distancia acumulada, el <code>costo</code> debe ser el primer elemento de la tupla <code>(costo, vertice)</code>.
+  </div>
+
+  <h2>3. La Inicialización: <code>crear_arreglo()</code></h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Versión Cátedra</th>
+        <th>Variante Óptima</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <pre><code>def crear_arreglo(grafo: GrafoTDA) -&gt; list[Nodo]:
+    cant = grafo.vertices()
+    arreglo: list[Nodo] = []
+    for i in range(cant):
+        nodo = Nodo(False, math.inf, 0)
+        if i == 0:
+            nodo.selec = True
+            nodo.costo = 0
+        elif grafo.existe_arista(0, i):
+            nodo.costo = grafo.peso_arista(0, i)
+        arreglo.append(nodo)
+    return arreglo</code></pre>
+        </td>
+        <td>
+          <pre><code>def crear_arreglo(grafo: Grafo) -&gt; list[Nodo]:
+    cant = grafo.vertices()
+    arreglo = [
+        Nodo(False, math.inf, 0)
+        for _ in range(cant)
+    ]
+    if cant &gt; 0:
+        arreglo[0].costo = 0
+    return arreglo</code></pre>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>4. La Propagación: <code>actualizar()</code> y <em>Lazy Deletion</em></h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Versión Cátedra</th>
+        <th>Variante Óptima</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <pre><code>def actualizar(grafo, a, i) -&gt; None:
+    for j in range(len(a)):
+        if not a[j].selec and grafo.existe_arista(i, j):
+            nuevo = a[i].costo + grafo.peso_arista(i, j)
+            if nuevo &lt; a[j].costo:
+                a[j].costo = nuevo
+                a[j].prev = i</code></pre>
+        </td>
+        <td>
+          <pre><code>def actualizar(grafo, a, q, i) -&gt; None:
+    for j, peso in grafo.adyacentes(i):
+        if not a[j].selec:
+            nuevo = a[i].costo + peso
+            if nuevo &lt; a[j].costo:
+                a[j].costo = nuevo
+                a[j].prev = i
+                heapq.heappush(q, (nuevo, j))</code></pre>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout-warning">
+    <strong>¿Cómo opera el <em>Lazy Deletion</em> en Python?</strong><br />
+    En un Min-Heap sin punteros invertidos, modificar una clave arbitraria (<em>decrease_key</em>) requeriría recorrer la lista en $O(V)$. En su lugar, simplemente insertamos la nueva tupla con menor costo en $O(\log V)$. La tupla de menor costo saldrá primero de la cola y consolidará el nodo marcando <code>arreglo_u[j].selec = True</code>. Cuando más adelante la tupla vieja obsoleta llegue a la cima, la línea <code>if arreglo_u[i].selec: continue</code> la detecta y la descarta en <strong>$O(1)$</strong> sin volver a relajar sus aristas.
+  </div>
+
+  <div class="nav-lecciones">
+    <a href="./01-explicacion-del-seudocodigo.html">← Anterior: Lección 1 — Seudocódigo</a>
+    <a href="./03-analisis-de-complejidad.html">Siguiente: Lección 3 — Análisis de Complejidad →</a>
+  </div>
+</body>
+</html>

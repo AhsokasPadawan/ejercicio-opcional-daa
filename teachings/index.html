@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía de Estudio y Defensa Oral — Dijkstra con Cola de Prioridad</title>
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <h1>Guía Completa para la Defensa Oral — TP Optativo Dijkstra</h1>
+  <p>
+    Bienvenido/a al material de estudio oficial para la defensa del <strong>Primer TP Optativo de Diseño y Análisis de Algoritmos</strong>. Esta guía está organizada en <strong>5 lecciones autocontenidas en HTML</strong> que corresponden exactamente a las 5 partes de la presentación y a las 3 pestañas de la aplicación interactiva:
+  </p>
+
+  <div style="display: grid; gap: 1rem; margin: 2rem 0;">
+    <div style="background: #ffffff; padding: 1.25rem; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="badge">Parte 1 — Pestaña 1</span>
+        <span style="font-weight: bold; color: #64748b;">Seudocódigo</span>
+      </div>
+      <h3 style="margin: 0.5rem 0;"><a href="./lessons/01-explicacion-del-seudocodigo.html">1. Explicación del Seudocódigo</a></h3>
+      <p style="margin: 0; color: #475569;">
+        Desglose línea por línea comparando la versión de la cátedra con Arreglo U, la variante óptima con Cola de Prioridad y la variante no óptima literal.
+      </p>
+    </div>
+
+    <div style="background: #ffffff; padding: 1.25rem; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="badge">Parte 2 — Pestaña 1</span>
+        <span style="font-weight: bold; color: #64748b;">Python</span>
+      </div>
+      <h3 style="margin: 0.5rem 0;"><a href="./lessons/02-explicacion-del-codigo-python.html">2. Explicación del Código en Python</a></h3>
+      <p style="margin: 0; color: #475569;">
+        Implementación con <code>heapq</code>, por qué la tupla es <code>(costo, vertice)</code>, técnica de <em>Lazy Deletion</em> y descarte en $O(1)$.
+      </p>
+    </div>
+
+    <div style="background: #ffffff; padding: 1.25rem; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="badge">Parte 3 — Pestaña 2</span>
+        <span style="font-weight: bold; color: #64748b;">Complejidad</span>
+      </div>
+      <h3 style="margin: 0.5rem 0;"><a href="./lessons/03-analisis-de-complejidad.html">3. Análisis de Complejidad y Comparación</a></h3>
+      <p style="margin: 0; color: #475569;">
+        Deducción formal de $O(V^2)$ vs. $O((V+E)\log V)$, grafos densos vs. dispersos, la trampa de la matriz y el análisis en lenguaje C.
+      </p>
+    </div>
+
+    <div style="background: #ffffff; padding: 1.25rem; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="badge">Parte 4 — Pestaña 3</span>
+        <span style="font-weight: bold; color: #64748b;">Sandbox en Vivo</span>
+      </div>
+      <h3 style="margin: 0.5rem 0;"><a href="./lessons/04-recorrido-del-grafo-y-sandbox.html">4. Recorrido del Grafo y Sandbox en Vivo</a></h3>
+      <p style="margin: 0; color: #475569;">
+        Cómo se recorre el grafo, dinámica de llenado y vaciado del heap, sobrescritura de la tabla $U$ y construcción del árbol SPT resultante con diagramas.
+      </p>
+    </div>
+
+    <div style="background: #ffffff; padding: 1.25rem; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="badge">Parte 5 — Examen Oral</span>
+        <span style="font-weight: bold; color: #64748b;">Preguntas de Cátedra</span>
+      </div>
+      <h3 style="margin: 0.5rem 0;"><a href="./lessons/05-preguntas-del-profesor-y-teoria-greedy.html">5. Preguntas del Profesor y Teoría Greedy</a></h3>
+      <p style="margin: 0; color: #475569;">
+        Los 5 elementos Greedy (C-S-F-S-O), demostración formal de optimalidad por contradicción, por qué no admite pesos negativos y banco de 6 preguntas modelo.
+      </p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Acceso a la Aplicación en Vivo:</strong> Para correr la interfaz durante la presentación, levantá el backend con <code>python -m uvicorn backend.app:app --reload --port 8000</code> y el frontend con <code>cd frontend &amp;&amp; npm run dev</code>, accediendo a <a href="http://localhost:5173" target="_blank">http://localhost:5173</a>.
+  </div>
+</body>
+</html>

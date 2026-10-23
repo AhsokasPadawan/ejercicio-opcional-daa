@@ -1,0 +1,153 @@
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  color: #1e293b;
+  background: #f8fafc;
+  line-height: 1.65;
+}
+
+h1, h2, h3, h4 {
+  color: #0f172a;
+  font-weight: 700;
+  margin-top: 1.8rem;
+  margin-bottom: 0.8rem;
+}
+
+h1 {
+  font-size: 2.1rem;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+  color: #1e3a8a;
+}
+
+h2 {
+  font-size: 1.5rem;
+  border-bottom: 1px solid #cbd5e1;
+  padding-bottom: 0.3rem;
+  color: #1e40af;
+}
+
+p, ul, ol {
+  margin-bottom: 1rem;
+}
+
+a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+pre, code {
+  font-family: Consolas, "Fira Code", monospace;
+  font-size: 0.92rem;
+}
+
+code {
+  background: #f1f5f9;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  color: #0f172a;
+}
+
+pre {
+  background: #0f172a;
+  color: #f8fafc;
+  padding: 1.2rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+
+pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+th, td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top;
+}
+
+th {
+  background: #f1f5f9;
+  color: #334155;
+  font-weight: 600;
+}
+
+tr:hover {
+  background: #f8fafc;
+}
+
+.callout {
+  background: #eff6ff;
+  border-left: 5px solid #3b82f6;
+  padding: 1rem 1.25rem;
+  border-radius: 0 8px 8px 0;
+  margin: 1.5rem 0;
+}
+
+.callout-warning {
+  background: #fffbeb;
+  border-left: 5px solid #f59e0b;
+}
+
+.callout-success {
+  background: #f0fdf4;
+  border-left: 5px solid #10b981;
+}
+
+.nav-lecciones {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-top: 2.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  border: 1px solid #e2e8f0;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.diagrama-contenedor {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.diagrama-contenedor svg {
+  max-width: 100%;
+  height: auto;
+}

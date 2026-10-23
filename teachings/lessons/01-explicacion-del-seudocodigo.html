@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lección 1: Explicación del Seudocódigo (Pestaña 1)</title>
+  <link rel="stylesheet" href="../assets/styles.css" />
+</head>
+<body>
+  <div style="margin-bottom: 1rem;">
+    <span class="badge">Parte 1 de 5 — Pestaña 1 de la UI</span>
+  </div>
+  <h1>Lección 1: Explicación Línea por Línea del Seudocódigo</h1>
+  
+  <p>
+    Esta lección te prepara para defender la <strong>primera parte de la presentación</strong> usando la <strong>Pestaña 1 (Comparativa de Código)</strong>. Compararemos en paralelo la versión original de la cátedra con nuestra <strong>Variante Óptima</strong> y con la <strong>Variante No Óptima (Literal)</strong>.
+  </p>
+
+  <div class="callout">
+    <strong>La idea central para la defensa:</strong> En el código original de la cátedra, el arreglo <code>Nodo[] U</code> cumplía dos funciones simultáneas: (1) <em>selección del mínimo</em> en $O(V)$ y (2) <em>tabla de acceso directo $O(1)$</em> para consultar costos y predecesores. La Cola de Prioridad reemplaza únicamente la primera función (bajándola a $O(\log V)$), pero <strong>se conserva el arreglo indexado</strong> para mantener el acceso $O(1)$.
+  </div>
+
+  <h2>1. La Estructura <code>Nodo</code></h2>
+  <pre><code>class Nodo {
+    boolean selec  // Indica si el camino más corto hacia este vértice ya es definitivo.
+    int costo      // Costo mínimo tentativo acumulado desde el vértice origen 0.
+    int prev       // Vértice inmediatamente anterior para reconstruir el camino.
+}</code></pre>
+  <p>
+    Tanto en la cátedra como en nuestra variante óptima, cada vértice tiene asociado este registro en el arreglo <code>U</code> para garantizar lecturas y escrituras en tiempo constante <strong>$O(1)$</strong>.
+  </p>
+
+  <h2>2. El Algoritmo Principal: Comparación Línea por Línea</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 5%;">#</th>
+        <th style="width: 45%;">Versión Cátedra (Arreglo U)</th>
+        <th style="width: 50%;">Variante Óptima (Cola de Prioridad)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><code>algoritmo Dijkstra(G : GrafoTDA) {</code></td>
+        <td><code>algoritmo Dijkstra(G : GrafoTDA) {</code></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><code>  Nodo[] U = crearArreglo(G)</code></td>
+        <td><code>  Nodo[] U = crearArreglo(G)</code></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><em>(no existe cola)</em></td>
+        <td><code>  ColaPrioridadTDA Q = new ColaPrioridad()</code></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><em>(no existe cola)</em></td>
+        <td><code>  Q.inicializarCola()</code></td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><em>(no existe cola)</em></td>
+        <td><code>  Q.acolarPrioridad(0, 0) // Encola la raíz (0, costo 0)</code></td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><code>  while (!completo(U)) { // O(V) por iteración</code></td>
+        <td><code>  while (!Q.colaVacia()) { // O(1) por iteración</code></td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><code>    int i = buscarMinimo(U) // O(V) lineal</code></td>
+        <td><code>    int i = Q.primero()     // O(1) consulta</code></td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td><em>(no existe)</em></td>
+        <td><code>    Q.desacolar()           // O(log V) extracción</code></td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td><em>(no existe)</em></td>
+        <td><code>    if (U[i].selec) continue // Descarte perezoso en O(1)</code></td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td><code>    U[i].selec = true</code></td>
+        <td><code>    U[i].selec = true</code></td>
+      </tr>
+      <tr>
+        <td>11</td>
+        <td><code>    actualizar(G, U, i)</code></td>
+        <td><code>    actualizar(G, U, Q, i)</code></td>
+      </tr>
+      <tr>
+        <td>12</td>
+        <td><code>  }</code></td>
+        <td><code>  }</code></td>
+      </tr>
+      <tr>
+        <td>13</td>
+        <td><code>  return U</code></td>
+        <td><code>  return U</code></td>
+      </tr>
+      <tr>
+        <td>14</td>
+        <td><code>}</code></td>
+        <td><code>}</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>3. La Inicialización: <code>crearArreglo</code></h2>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+    <div>
+      <h4>Versión Cátedra (Arreglo U)</h4>
+      <pre><code>Nodo[] crearArreglo(GrafoTDA G) {
+  int cant = G.vertices()
+  Nodo[] Arreglo = new Nodo[cant]
+  for (int i = 0; i &lt; cant; i++) {
+    Nodo O = new Nodo()
+    O.prev = 0
+    if (i == 0) {
+      O.selec = true
+      O.costo = 0
+    } else {
+      O.selec = false
+      if (G.existeArista(0, i))
+        O.costo = G.pesoArista(0, i)
+      else
+        O.costo = ∞
+    }
+    Arreglo[i] = O
+  }
+  return Arreglo
+}</code></pre>
+    </div>
+    <div>
+      <h4>Variante Óptima (Limpia)</h4>
+      <pre><code>Nodo[] crearArreglo(GrafoTDA G) {
+  int cant = G.vertices()
+  Nodo[] Arreglo = new Nodo[cant]
+  for (int i = 0; i &lt; cant; i++) {
+    Nodo O = new Nodo()
+    O.prev = 0
+    O.selec = false
+    O.costo = (i == 0) ? 0 : ∞
+    Arreglo[i] = O
+  }
+  return Arreglo
+}</code></pre>
+    </div>
+  </div>
+  <p>
+    <strong>¿Por qué cambia?</strong> La cátedra hacía una pre-inspección manual de las aristas del vértice <code>0</code> dentro de la inicialización y lo marcaba como visitado de entrada. En nuestra versión óptima, <strong>todos los vértices inician en <code>selec = false</code></strong>, de modo que el nodo <code>0</code> es procesado de forma unificada y limpia en la primera vuelta del ciclo <code>while</code>.
+  </p>
+
+  <h2>4. La Propagación: <code>actualizar</code></h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 50%;">Versión Cátedra</th>
+        <th style="width: 50%;">Variante Óptima (Cola de Prioridad)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <pre><code>void actualizar(GrafoTDA G, Nodo[] A, int i) {
+  // Recorre TODOS los V vértices
+  for (int j = 0; j &lt; A.length; j++) {
+    if (!A[j].selec &amp;&amp; G.existeArista(i, j)) {
+      int nuevo = A[i].costo + G.pesoArista(i, j)
+      if (nuevo &lt; A[j].costo) {
+        A[j].costo = nuevo
+        A[j].prev = i
+      }
+    }
+  }
+}</code></pre>
+        </td>
+        <td>
+          <pre><code>void actualizar(GrafoTDA G, Nodo[] A, ColaPrioridadTDA Q, int i) {
+  // Recorre SOLO los vecinos salientes reales
+  for (int j : G.adyacentes(i)) {
+    if (!A[j].selec) {
+      int nuevo = A[i].costo + G.pesoArista(i, j)
+      if (nuevo &lt; A[j].costo) {
+        A[j].costo = nuevo
+        A[j].prev = i
+        Q.acolarPrioridad(j, nuevo) // &lt;-- Llena la cola
+      }
+    }
+  }
+}</code></pre>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>5. ¿Qué pasó con <code>completo(U)</code> y <code>buscarMinimo(U)</code>?</h2>
+  <div class="callout-success">
+    <strong>¡Ambas funciones desaparecen por completo en la versión óptima!</strong>
+    <ul>
+      <li><code>completo(U)</code> recorría las $V$ posiciones en cada vuelta ($O(V)$). Se sustituye por <code>!Q.colaVacia()</code> en <strong>$O(1)$</strong>.</li>
+      <li><code>buscarMinimo(U)</code> recorría las $V$ posiciones buscando el menor ($O(V)$). Se sustituye por <code>Q.desacolar()</code> en <strong>$O(\log V)$</strong>.</li>
+    </ul>
+  </div>
+
+  <h2>6. El Contraste: ¿Qué pasa si eliminamos el arreglo <code>U</code> por completo?</h2>
+  <p>
+    En la tercera columna de la Pestaña 1 mostramos la <strong>Variante No Óptima / Literal</strong>:
+  </p>
+  <pre><code>void actualizarSinArreglo(GrafoTDA G, ColaPrioridadTDA Q, int i, int cI) {
+  ColaPrioridadTDA QAux = new ColaPrioridad()
+  QAux.inicializarCola()
+  while (!Q.colaVacia()) { // Debe vaciar toda la cola para buscar vecinos
+    int j = Q.primero(); int cJ = Q.prioridad(); Q.desacolar()
+    if (G.existeArista(i, j)) {
+      int nuevo = cI + G.pesoArista(i, j)
+      if (nuevo &lt; cJ) cJ = nuevo
+    }
+    QAux.acolarPrioridad(j, cJ)
+  }
+  while (!QAux.colaVacia()) { // Y volver a pasarla a la cola original
+    Q.acolarPrioridad(QAux.primero(), QAux.prioridad()); QAux.desacolar()
+  }
+}</code></pre>
+  <p>
+    Esto demuestra por qué una Cola de Prioridad <strong>no reemplaza a un arreglo indexado</strong>: no permite consultar <code>U[j].costo</code> por índice, obligando a desencolar y reencolar en cada paso, degradando el algoritmo a $O(V^3)$.
+  </p>
+
+  <div class="nav-lecciones">
+    <span>Índice del Curso</span>
+    <a href="./02-explicacion-del-codigo-python.html">Siguiente: Lección 2 — Explicación del Código Python →</a>
+  </div>
+</body>
+</html>

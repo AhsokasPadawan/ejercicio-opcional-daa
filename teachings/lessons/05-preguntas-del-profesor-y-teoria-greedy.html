@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lección 5: Preguntas del Profesor y Teoría Greedy</title>
+  <link rel="stylesheet" href="../assets/styles.css" />
+</head>
+<body>
+  <div style="margin-bottom: 1rem;">
+    <span class="badge">Parte 5 de 5 — Defensa Oral</span>
+  </div>
+  <h1>Lección 5: Preguntas Clave del Profesor y Fundamentos Greedy</h1>
+
+  <p>
+    Esta lección cubre la <strong>quinta y última parte de la presentación</strong>: las preguntas conceptuales y de diseño que el profesor evaluará en la defensa oral, junto con la justificación teórica formal del paradigma voraz.
+  </p>
+
+  <h2>1. Los 5 Elementos Greedy (Mnemotecnia: C-S-F-S-O)</h2>
+  <p>
+    Basado en el apunte oficial de cátedra (<em>Elementos de una solución greedy</em>):
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Elemento Formal</th>
+        <th>Definición General</th>
+        <th>Aplicación Exacta en Dijkstra</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1. Candidatos</strong></td>
+        <td>Objetos disponibles para construir la solución.</td>
+        <td>Vértices pendientes de visita definitiva (con <code>U[i].selec == False</code>).</td>
+      </tr>
+      <tr>
+        <td><strong>2. Selección</strong></td>
+        <td>Criterio heurístico que elige el mejor candidato local.</td>
+        <td>Elegir el vértice no visitado de <strong>menor costo acumulado desde el origen 0</strong> (extraído del Min-Heap en $O(\log V)$).</td>
+      </tr>
+      <tr>
+        <td><strong>3. Factibilidad</strong></td>
+        <td>Determina si una transición puede formar parte de la solución.</td>
+        <td>Que el vértice destino no esté visitado (<code>!U[j].selec</code>) y exista arista dirigida con peso positivo ($w > 0$).</td>
+      </tr>
+      <tr>
+        <td><strong>4. Solución</strong></td>
+        <td>Determina si se alcanzó la solución completa (corte).</td>
+        <td>Cuando se vacía la cola de prioridad: <code>Q.colaVacia() == true</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>5. Objetivo</strong></td>
+        <td>Magnitud cuantitativa a optimizar.</td>
+        <td><strong>Minimizar la suma de pesos de las aristas</strong> desde el origen 0 a cada vértice.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>2. Demostración de Optimalidad y Pesos Negativos</h2>
+  <div class="callout">
+    <strong>¿Por qué Dijkstra garantiza el óptimo global?</strong><br />
+    Cumple dos propiedades fundamentales:
+    <ol>
+      <li><strong>Subestructura Óptima:</strong> Si el camino mínimo $0 \rightsquigarrow w$ pasa por $v$, el subcamino $0 \rightsquigarrow v$ es necesariamente el camino mínimo entre $0$ y $v$.</li>
+      <li>
+        <strong>Demostración por el absurdo:</strong> Sea $u$ el nodo recién extraído con costo tentativo $d[u]$. Si existiera otro camino más corto $P^*$ hacia $u$ ($w(P^*) &lt; d[u]$), como $P^*$ arranca en los nodos ya visitados $S$ y llega a $u \notin S$, debe cruzar la frontera por una primera arista $(x, y)$ con $y \notin S$.
+        Como todos los pesos son no negativos ($w \ge 0$), el costo hasta $u$ satisface $w(P^*) \ge d[y]$. Pero como $u$ fue elegido por la función de selección voraz por ser el mínimo entre todos los pendientes, $d[u] \le d[y] \le w(P^*) &lt; d[u]$, lo que es una contradicción. Por lo tanto, $d[u]$ es estrictamente definitivo al marcar <code>selec = True</code>.
+      </li>
+    </ol>
+  </div>
+  <div class="callout-warning">
+    <strong>¿Por qué no admite aristas de peso negativo?</strong><br />
+    Porque si existe una arista con peso negativo ($w &lt; 0$), extender un camino puede <em>restar</em> costo acumulado. Un camino que pase por un nodo $y$ más lejano podría terminar siendo más barato que $d[u]$. Como Dijkstra ya marcó $u$ como definitivo y nunca vuelve atrás (no hace backtracking), se perdería ese camino más corto.
+  </div>
+
+  <h2>3. Banco de Preguntas Típicas para la Defensa Oral</h2>
+
+  <h3>Pregunta 1: "¿Por qué conservaron el arreglo U en vez de borrarlo por completo?"</h3>
+  <div class="callout-success">
+    <strong>Respuesta Modelo:</strong><br />
+    <em>"Porque el arreglo U cumplía dos funciones: por un lado era el conjunto de candidatos donde buscarMinimo hacía la búsqueda lineal en $O(V)$, y por otro lado era la tabla de acceso directo $O(1)$ para consultar y modificar costos. La Cola de Prioridad optimiza la búsqueda a $O(\log V)$, pero no provee indexación por clave. Si quitáramos U (como mostramos en la variante no óptima), para relajar una arista tendríamos que vaciar la cola en una auxiliar, degradando la complejidad a $O(V^3)$. Por eso la cola reemplaza la selección, pero conservamos U como tabla de estado."</em>
+  </div>
+
+  <h3>Pregunta 2: "¿Qué pasa con las entradas duplicadas en la cola de prioridad (*Lazy Deletion*)? ¿No rompe el $O(\log V)$?"</h3>
+  <div class="callout-success">
+    <strong>Respuesta Modelo:</strong><br />
+    <em>"No rompe la complejidad. Usamos Lazy Deletion: cuando encontramos un atajo, insertamos la nueva tupla con menor costo en $O(\log V)$. Como tiene menor costo, el Min-Heap la entregará primero y marcará el nodo como <code>selec = True</code>. Cuando más tarde sale la entrada vieja con mayor costo, la condición <code>if arreglo_u[i].selec: continue</code> la descarta en $O(1)$. Además, como a lo sumo se inserta una tupla por cada arista relajada, el heap tiene a lo sumo $E$ elementos. Por propiedad logarítmica: $\log_2(E) \le \log_2(V^2) = 2 \log_2 V = O(\log V)$. La constante 2 se absorbe y el costo sigue siendo estrictamente $O(\log V)$."</em>
+  </div>
+
+  <h3>Pregunta 3: "¿Mejora siempre la complejidad al usar cola de prioridad?"</h3>
+  <div class="callout-success">
+    <strong>Respuesta Modelo:</strong><br />
+    <em>"Depende de la densidad del grafo y de la representación:
+    1. En <strong>grafos dispersos</strong> ($E \approx V$), $O(V \log V)$ mejora drásticamente al $O(V^2)$ del arreglo.
+    2. En <strong>grafos densos</strong> ($E \approx V^2$), $O(V^2 \log V)$ tiene un factor logarítmico extra, por lo que el Arreglo de la cátedra $O(V^2)$ es asintóticamente superior.
+    3. Si mantuviéramos una <strong>matriz de adyacencia</strong> recorriendo los $V$ vértices en actualizar, la complejidad quedaría en $O(V^2 + E \log V)$, sin mejorar nunca al original."</em>
+  </div>
+
+  <h3>Pregunta 4: "¿Por qué en teoría gana el Arreglo para densos, pero en el Sandbox dio 39 vs 74?"</h3>
+  <div class="callout-success">
+    <strong>Respuesta Modelo:</strong><br />
+    <em>"Porque el Sandbox mide llamadas a funciones de alto nivel del motor: cada <code>heappush</code> nativo cuenta como 1 operación, mientras que el código de la cátedra tiene el sobrecosto de recorrer dos veces el arreglo completo (completo y buscarMinimo). En la teoría y en lenguaje C, cada inserción en el heap cuesta $\log_2 V$ comparaciones y saltos de memoria; para grafos densos con $V \ge 9$ ($E \ge 72$), el costo acumulado $V^2 \log_2 V$ supera a las $3V^2$ comparaciones secuenciales en memoria caché del arreglo."</em>
+  </div>
+
+  <div class="nav-lecciones">
+    <a href="./04-recorrido-del-grafo-y-sandbox.html">← Anterior: Lección 4 — Recorrido y Sandbox</a>
+    <a href="./01-explicacion-del-seudocodigo.html">Volver al Inicio: Lección 1 — Seudocódigo →</a>
+  </div>
+</body>
+</html>

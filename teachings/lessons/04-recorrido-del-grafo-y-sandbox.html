@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lección 4: Recorrido del Grafo y Sandbox en Vivo (Pestaña 3)</title>
+  <link rel="stylesheet" href="../assets/styles.css" />
+</head>
+<body>
+  <div style="margin-bottom: 1rem;">
+    <span class="badge">Parte 4 de 5 — Pestaña 3 de la UI</span>
+  </div>
+  <h1>Lección 4: Recorrido del Grafo, Dinámica de la Cola y Formación del Resultado</h1>
+
+  <p>
+    Esta lección te guía paso a paso para defender la <strong>Parte 4 de la presentación</strong> mientras operas el <strong>Laboratorio y Sandbox en Vivo (Pestaña 3)</strong> frente al profesor.
+  </p>
+
+  <div class="callout">
+    <strong>Recomendación de preset para la defensa:</strong> En el selector superior de grafos elegí el <strong>"Grafo Clásico de Cátedra (5 vértices)"</strong>. Es el grafo oficial del apunte con aristas directas e indirectas que disparan atajos.
+  </div>
+
+  <h2>1. Los 4 Elementos Sincronizados en Pantalla</h2>
+  <p>Durante la ejecución en vivo, explicás cómo interactúan 4 componentes al mismo tiempo:</p>
+  <ul>
+    <li><strong>Lienzo Izquierdo (Grafo de Entrada)</strong>: Muestra los vértices y aristas del grafo original. Se resalta el vértice extraído en verde y la arista evaluada en azul.</li>
+    <li><strong>Visualizador de la Cola de Prioridad</strong>: Muestra el contenido del Min-Heap en cada paso con sus tuplas <code>(costo, vértice)</code>.</li>
+    <li><strong>Tabla de Estado del Arreglo $U$</strong>: Muestra las columnas <code>vértice</code>, <code>selec</code>, <code>costo</code> y <code>prev</code> actualizándose en tiempo real.</li>
+    <li><strong>Lienzo Derecho (Grafo Resultado / Árbol SPT)</strong>: Construye el <em>Shortest Path Tree</em> conectando solo las aristas definitivas que forman los caminos mínimos desde el vértice <code>0</code>.</li>
+  </ul>
+
+  <h2>2. Diagrama Visual: Grafo de Entrada vs. Árbol de Caminos Mínimos</h2>
+  <div class="diagrama-contenedor">
+    <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" style="font-family: system-ui, sans-serif; font-size: 13px;">
+      <!-- GRAFO ORIGINAL -->
+      <text x="180" y="25" text-anchor="middle" font-weight="bold" fill="#1e3a8a">1. Grafo Original de Entrada</text>
+      <!-- Aristas originales -->
+      <line x1="60" y1="130" x2="160" y2="70" stroke="#94a3b8" stroke-width="2" marker-end="url(#flecha)" />
+      <text x="105" y="90" fill="#475569" font-weight="bold">w: 10</text>
+      <line x1="60" y1="130" x2="160" y2="190" stroke="#94a3b8" stroke-width="2" marker-end="url(#flecha)" />
+      <text x="105" y="175" fill="#475569" font-weight="bold">w: 5</text>
+      <line x1="160" y1="190" x2="160" y2="70" stroke="#94a3b8" stroke-width="2" marker-end="url(#flecha)" />
+      <text x="175" y="135" fill="#475569" font-weight="bold">w: 3</text>
+      <line x1="160" y1="70" x2="280" y2="70" stroke="#94a3b8" stroke-width="2" marker-end="url(#flecha)" />
+      <text x="220" y="60" fill="#475569" font-weight="bold">w: 1</text>
+      <line x1="160" y1="190" x2="280" y2="190" stroke="#94a3b8" stroke-width="2" marker-end="url(#flecha)" />
+      <text x="220" y="210" fill="#475569" font-weight="bold">w: 2</text>
+      <!-- Nodos originales -->
+      <circle cx="60" cy="130" r="18" fill="#3b82f6" /><text x="60" y="135" text-anchor="middle" fill="#fff" font-weight="bold">0</text>
+      <circle cx="160" cy="70" r="18" fill="#e2e8f0" stroke="#64748b" stroke-width="2" /><text x="160" y="75" text-anchor="middle" fill="#0f172a" font-weight="bold">1</text>
+      <circle cx="160" cy="190" r="18" fill="#e2e8f0" stroke="#64748b" stroke-width="2" /><text x="160" y="195" text-anchor="middle" fill="#0f172a" font-weight="bold">3</text>
+      <circle cx="280" cy="70" r="18" fill="#e2e8f0" stroke="#64748b" stroke-width="2" /><text x="280" y="75" text-anchor="middle" fill="#0f172a" font-weight="bold">2</text>
+      <circle cx="280" cy="190" r="18" fill="#e2e8f0" stroke="#64748b" stroke-width="2" /><text x="280" y="195" text-anchor="middle" fill="#0f172a" font-weight="bold">4</text>
+
+      <!-- FLECHA DIVISORIA -->
+      <path d="M 360 130 L 400 130" stroke="#2563eb" stroke-width="3" marker-end="url(#flecha-azul)" />
+
+      <!-- GRAFO RESULTADO (SPT) -->
+      <text x="580" y="25" text-anchor="middle" font-weight="bold" fill="#059669">2. Grafo Resultado (Árbol SPT Final)</text>
+      <!-- Aristas SPT -->
+      <line x1="460" y1="130" x2="560" y2="190" stroke="#10b981" stroke-width="3" marker-end="url(#flecha-verde)" />
+      <text x="500" y="175" fill="#047857" font-weight="bold">(0-&gt;3) d=5</text>
+      <line x1="560" y1="190" x2="560" y2="70" stroke="#10b981" stroke-width="3" marker-end="url(#flecha-verde)" />
+      <text x="580" y="135" fill="#047857" font-weight="bold">(3-&gt;1) d=8</text>
+      <line x1="560" y1="70" x2="680" y2="70" stroke="#10b981" stroke-width="3" marker-end="url(#flecha-verde)" />
+      <text x="620" y="60" fill="#047857" font-weight="bold">(1-&gt;2) d=9</text>
+      <line x1="560" y1="190" x2="680" y2="190" stroke="#10b981" stroke-width="3" marker-end="url(#flecha-verde)" />
+      <text x="620" y="210" fill="#047857" font-weight="bold">(3-&gt;4) d=7</text>
+      <!-- Nodos SPT -->
+      <circle cx="460" cy="130" r="18" fill="#10b981" /><text x="460" y="135" text-anchor="middle" fill="#fff" font-weight="bold">0</text>
+      <circle cx="560" cy="70" r="18" fill="#10b981" /><text x="560" y="75" text-anchor="middle" fill="#fff" font-weight="bold">1</text>
+      <circle cx="560" cy="190" r="18" fill="#10b981" /><text x="560" y="195" text-anchor="middle" fill="#fff" font-weight="bold">3</text>
+      <circle cx="680" cy="70" r="18" fill="#10b981" /><text x="680" y="75" text-anchor="middle" fill="#fff" font-weight="bold">2</text>
+      <circle cx="680" cy="190" r="18" fill="#10b981" /><text x="680" y="195" text-anchor="middle" fill="#fff" font-weight="bold">4</text>
+
+      <defs>
+        <marker id="flecha" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+        </marker>
+        <marker id="flecha-azul" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+        </marker>
+        <marker id="flecha-verde" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+
+  <h2>3. La Trazabilidad de Estados: Cómo se llena y vacía la Cola</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Vuelta</th>
+        <th>Nodo Extraído (mínimo)</th>
+        <th>Acción en la Tabla $U$</th>
+        <th>Aristas Relajadas y Encoladas en $Q$</th>
+        <th>Grafo Resultado (SPT)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Paso 0</strong></td>
+        <td>— (Inicio)</td>
+        <td><code>U[0].costo = 0</code>, resto en $\infty$. Todos en <code>selec = False</code>.</td>
+        <td>Se encola <code>[(0, nodo 0)]</code></td>
+        <td>Vacío.</td>
+      </tr>
+      <tr>
+        <td><strong>Vuelta 1</strong></td>
+        <td><strong>Nodo 0</strong> (costo 0)</td>
+        <td><code>U[0].selec = True</code></td>
+        <td>Descubre vecinos 1 y 3. Sobrescribe: <code>U[1]=10</code>, <code>U[3]=5</code>. Encola <code>(10, 1)</code> y <code>(5, 3)</code>.</td>
+        <td>Aparece el nodo 0.</td>
+      </tr>
+      <tr>
+        <td><strong>Vuelta 2</strong></td>
+        <td><strong>Nodo 3</strong> (costo 5)</td>
+        <td><code>U[3].selec = True</code></td>
+        <td>Relaja vecinos. Encuentra atajo a 1 ($5+3=8 &lt; 10$). Sobrescribe <code>U[1].costo = 8</code>, <code>U[1].prev = 3</code>. Encola <code>(8, 1)</code>, <code>(7, 4)</code>, <code>(14, 2)</code>.</td>
+        <td>Se agrega arista <code>(0 -&gt; 3)</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Vuelta 3</strong></td>
+        <td><strong>Nodo 4</strong> (costo 7)</td>
+        <td><code>U[4].selec = True</code></td>
+        <td>Relaja hacia 2 ($7+6=13 &lt; 14$). Sobrescribe <code>U[2]=13</code>. Encola <code>(13, 2)</code>.</td>
+        <td>Se agrega arista <code>(3 -&gt; 4)</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Vuelta 4</strong></td>
+        <td><strong>Nodo 1</strong> (costo 8)</td>
+        <td><code>U[1].selec = True</code></td>
+        <td>Relaja hacia 2 ($8+1=9 &lt; 13$). Sobrescribe <code>U[2]=9</code>, <code>U[2].prev = 1</code>. Encola <code>(9, 2)</code>.</td>
+        <td>Se agrega arista <code>(3 -&gt; 1)</code> (atajo).</td>
+      </tr>
+      <tr>
+        <td><strong>Vuelta 5</strong></td>
+        <td><strong>Nodo 2</strong> (costo 9)</td>
+        <td><code>U[2].selec = True</code></td>
+        <td>No tiene aristas salientes no visitadas.</td>
+        <td>Se agrega arista <code>(1 -&gt; 2)</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Descartes</strong></td>
+        <td>Tuplas viejas (10, 1), (14, 2), etc.</td>
+        <td>Ninguna. Al salir se detecta <code>U[i].selec == True</code>.</td>
+        <td><em>Descarte por Lazy Deletion</em> en $O(1)$ sin relajar.</td>
+        <td>Sin cambios.</td>
+      </tr>
+      <tr>
+        <td><strong>Fin</strong></td>
+        <td>Cola vacía (<code>len == 0</code>)</td>
+        <td><strong>Todos los nodos alcanzables tienen <code>selec = True</code></strong>.</td>
+        <td>Fin de la ejecución.</td>
+        <td><strong>Árbol SPT Completo</strong>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>4. El Caso Particular: Grafos No Conexos</h2>
+  <p>
+    Si en el Sandbox seleccionás el preset <strong>"Grafo No Conexo (Vértices Inalcanzables ∞)"</strong>, podés mostrarle al profesor que:
+  </p>
+  <ul>
+    <li>Los vértices desconectados (por ejemplo, el 4 y el 5) nunca se encolan porque ninguna arista llega a ellos desde el origen <code>0</code>.</li>
+    <li>Cuando se procesa la componente alcanzable, la cola queda vacía y el bucle <code>while</code> termina limpiamente.</li>
+    <li>Los nodos inalcanzables quedan en la tabla final con <code>costo = ∞</code> y <code>selec = False</code>, demostrando que nuestro algoritmo no cae en bucles infinitos.</li>
+  </ul>
+
+  <div class="nav-lecciones">
+    <a href="./03-analisis-de-complejidad.html">← Anterior: Lección 3 — Complejidad</a>
+    <a href="./05-preguntas-del-profesor-y-teoria-greedy.html">Siguiente: Lección 5 — Preguntas del Profesor y Teoría Greedy →</a>
+  </div>
+</body>
+</html>
